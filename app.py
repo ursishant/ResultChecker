@@ -5,24 +5,7 @@ import plotly.graph_objects as go
 from parsers import detect_format, parse_response_sheet, parse_answer_key
 from analyzer import analyze_answers
 from exporter import generate_csv, generate_excel
-
 st.set_page_config(page_title="ResultChecker by Pennion.com", page_icon="🎯", layout="wide")
-
-# Analytics Injection (Replace with your actual tracking code)
-components.html(
-    """
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-TRS54VERK8"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-TRS54VERK8');
-    </script>
-    """,
-    width=0, height=0
-)
 
 # Premium Custom CSS for Website UI
 st.markdown("""
