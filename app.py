@@ -19,13 +19,16 @@ components.html(
     width=0, height=0
 )
 
-# Custom CSS for Sleek Interface
+# Premium Custom CSS for Website UI
 st.markdown("""
 <style>
+    /* Google Fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
     /* Main Background & Fonts */
     .stApp {
-        background-color: #f8f9fa;
-        font-family: 'Inter', sans-serif;
+        background-color: #fcfcfd;
+        font-family: 'Plus Jakarta Sans', sans-serif;
     }
     
     /* Hide Default Streamlit Branding */
@@ -33,65 +36,93 @@ st.markdown("""
     footer {visibility: hidden;}
     header {visibility: hidden;}
     
-    /* Headers */
-    h1, h2, h3 {
-        color: #1f2937;
+    /* Global Typography */
+    h1, h2, h3, p, span {
+        font-family: 'Plus Jakarta Sans', sans-serif !important;
+    }
+    
+    h1 {
+        font-weight: 800 !important;
+        font-size: 2.5rem !important;
+        color: #0f172a !important;
+        letter-spacing: -0.05em !important;
+    }
+    
+    h2 {
         font-weight: 700 !important;
+        color: #1e293b !important;
+        letter-spacing: -0.03em !important;
     }
     
     /* Primary Button Styling */
     .stButton > button {
-        background-color: #2563eb !important;
+        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
         color: white !important;
-        border-radius: 8px !important;
+        border-radius: 12px !important;
         border: none !important;
-        padding: 0.6rem 1.2rem !important;
+        padding: 0.75rem 1.5rem !important;
         font-weight: 600 !important;
-        transition: all 0.2s ease-in-out !important;
+        font-size: 1rem !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        box-shadow: 0 4px 14px 0 rgba(37, 99, 235, 0.39) !important;
     }
     .stButton > button:hover {
-        background-color: #1d4ed8 !important;
-        box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2), 0 2px 4px -1px rgba(37, 99, 235, 0.1) !important;
-        transform: translateY(-1px) !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4) !important;
     }
     
     /* Upload Cards Styling */
     [data-testid="stFileUploader"] {
-        background-color: white;
+        background-color: #ffffff;
         border: 2px dashed #cbd5e1;
-        border-radius: 12px;
-        padding: 1.5rem;
-        transition: border-color 0.2s ease;
+        border-radius: 16px;
+        padding: 2rem;
+        transition: all 0.2s ease;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
     }
     [data-testid="stFileUploader"]:hover {
-        border-color: #2563eb;
+        border-color: #3b82f6;
+        background-color: #f8fafc;
     }
     
     /* Metric Cards */
     [data-testid="stMetric"] {
-        background-color: white;
-        border: 1px solid #e5e7eb;
-        border-radius: 12px;
-        padding: 1rem;
-        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        background-color: #ffffff;
+        border: 1px solid #f1f5f9;
+        border-radius: 16px;
+        padding: 1.25rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+        transition: transform 0.2s;
+    }
+    [data-testid="stMetric"]:hover {
+        transform: translateY(-2px);
+    }
+    [data-testid="stMetricLabel"] {
+        font-size: 0.9rem !important;
+        color: #64748b !important;
+        font-weight: 500 !important;
     }
     [data-testid="stMetricValue"] {
-        color: #2563eb !important;
+        color: #0f172a !important;
         font-weight: 800 !important;
-    }
-    
-    /* Expander / Accordion */
-    .streamlit-expanderHeader {
-        background-color: white;
-        border-radius: 8px;
-        border: 1px solid #e5e7eb;
-        font-weight: 600;
+        font-size: 2rem !important;
+        letter-spacing: -0.05em !important;
     }
     
     /* Sidebar */
     [data-testid="stSidebar"] {
         background-color: #ffffff;
-        border-right: 1px solid #e5e7eb;
+        border-right: 1px solid #f1f5f9;
+    }
+    [data-testid="stSidebar"] .stRadio label {
+        font-weight: 600 !important;
+        padding: 10px 0;
+    }
+    
+    /* Info/Warning Boxes */
+    .stAlert {
+        border-radius: 12px !important;
+        border: none !important;
     }
 </style>
 """, unsafe_allow_html=True)
