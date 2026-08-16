@@ -11,10 +11,14 @@ st.set_page_config(page_title="ResultChecker by Pennion.com", page_icon="🎯", 
 # Analytics Injection (Replace with your actual tracking code)
 components.html(
     """
-    <!-- Paste your Google Analytics or other tracking code here -->
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-TRS54VERK8"></script>
     <script>
-        // Analytics code goes here
-        console.log("Analytics active");
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-TRS54VERK8');
     </script>
     """,
     width=0, height=0
@@ -326,7 +330,16 @@ elif page == "Answer Checker":
         # Question-wise Detail
         st.subheader("Question-wise Detail")
         
-        for idx, row in df.iterrows():
+        filter_options = st.multiselect(
+            "Filter questions by result:",
+            options=["Correct", "Incorrect", "Unattempted", "Missing"],
+            default=["Correct", "Incorrect", "Unattempted", "Missing"]
+        )
+        
+        filtered_df = df[df['Result'].isin(filter_options)]
+        st.caption(f"Showing {len(filtered_df)} questions")
+        
+        for idx, row in filtered_df.iterrows():
             with st.expander(f"Q: {row['Question ID']} | Result: {row['Result']}"):
                 st.write(f"**Question ID:** {row['Question ID']}")
                 st.write(f"**Your selected option number:** {row['Chosen Option'] if row['Chosen Option'] else 'None'}")
