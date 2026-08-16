@@ -294,24 +294,20 @@ elif page == "Answer Checker":
                 with st.container(border=True):
                     st.markdown("<p style='color:#475569; font-size:0.9rem; font-weight:600; margin-bottom:0;'>Estimated Score</p>", unsafe_allow_html=True)
                     st.markdown(f"<h2 style='color:#2563eb; margin-top:0; font-size:2.5rem;'>◯ {stats['estimated_score']}</h2>", unsafe_allow_html=True)
-                    if st.button("View details", key="vd1"): pass
             with r2:
                 with st.container(border=True):
                     st.markdown("<p style='color:#475569; font-size:0.9rem; font-weight:600; margin-bottom:0;'>Attempt Ratio</p>", unsafe_allow_html=True)
                     attempt_pct = int((stats['attempted']/stats['total_key_questions'])*100) if stats['total_key_questions'] > 0 else 0
                     st.markdown(f"<h2 style='color:#2563eb; margin-top:0; font-size:2.5rem;'>◯ {attempt_pct}%</h2>", unsafe_allow_html=True)
-                    if st.button("View details", key="vd2"): pass
             r3, r4 = st.columns(2)
             with r3:
                 with st.container(border=True):
                     st.markdown("<p style='color:#475569; font-size:0.9rem; font-weight:600; margin-bottom:0;'>Match Confidence</p>", unsafe_allow_html=True)
                     st.markdown(f"<h2 style='color:#2563eb; margin-top:0; font-size:2.5rem;'>◯ {stats.get('matched_percentage', 0)}%</h2>", unsafe_allow_html=True)
-                    if st.button("View details", key="vd3"): pass
             with r4:
                 with st.container(border=True):
                     st.markdown("<p style='color:#475569; font-size:0.9rem; font-weight:600; margin-bottom:0;'>Missing Questions</p>", unsafe_allow_html=True)
                     st.markdown(f"<h2 style='color:#2563eb; margin-top:0; font-size:2.5rem;'>◯ {stats['missing']}</h2>", unsafe_allow_html=True)
-                    if st.button("View details", key="vd4"): pass
         
         # Actions
         st.subheader("Downloads")
