@@ -6,7 +6,7 @@ def analyze_answers(response_sheet_data, answer_key_data, marking_scheme=None):
         
     results = []
     
-    total_key_questions = len(answer_key_data)
+    total_key_questions = len(response_sheet_data)
     
     # Track which questions from the answer key have been found
     found_key_questions = set()
@@ -65,19 +65,7 @@ def analyze_answers(response_sheet_data, answer_key_data, marking_scheme=None):
             row["Result"] = "Missing from Key"
             
         results.append(row)
-        
-    # Check for missing questions (in key, but not in response sheet)
-    missing_qids = set(answer_key_data.keys()) - found_key_questions
-    for qid in missing_qids:
-        results.append({
-            "S.No": "-",
-            "Question ID": qid,
-            "Chosen Option": None,
-            "Chosen Option ID": None,
-            "Correct Option ID": answer_key_data[qid],
-            "Result": "Missing"
-        })
-        stats["missing"] += 1
+
         
     # Calculate Accuracy
     if stats["attempted"] > 0:
