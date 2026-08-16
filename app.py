@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import streamlit.components.v1 as components
+import plotly.graph_objects as go
 from parsers import detect_format, parse_response_sheet, parse_answer_key
 from analyzer import analyze_answers
 from exporter import generate_csv, generate_excel
@@ -231,21 +232,83 @@ elif page == "Answer Checker":
         if stats.get('matched_percentage', 0) < 50:
             st.warning("**Warning: The uploaded response sheet and answer key may not belong to the same examination/session. Please verify your files.**")
             
-        # Section 2: Answer Analysis
-        st.header("Your Answer Analysis")
-        st.caption("Important: The score shown here is calculated from the uploaded response sheet and answer key. It is not an official NTA score or result.")
+        # Section 2: Answer Analysis Dashboard
+        st.header("Answer Analysis Dashboard")
+        st.caption("Important: The score shown here is calculated directly from the uploaded response sheet and answer key. It is not an official NTA result.")
         
-        m1, m2, m3, m4, m5, m6 = st.columns(6)
-        m1.metric("Total Questions", stats["total_key_questions"])
-        m2.metric("Attempted", stats["attempted"])
-        m3.metric("Correct", stats["correct"])
-        m4.metric("Incorrect", stats["incorrect"])
-        m5.metric("Unattempted", stats["unattempted"])
-        m6.metric("Missing", stats["missing"])
+        dash_col1, dash_col2 = st.columns([1, 1.8])
         
-        c1, c2 = st.columns(2)
-        c1.metric("Accuracy", f"{stats['accuracy']}%")
-        c2.metric("Estimated Score", stats['estimated_score'])
+        with dash_col1:
+            with st.container(border=True):
+                st.markdown("<h4 style='color:#475569;'>Accuracy / Health</h4>", unsafe_allow_html=True)
+                fig = go.Figure(go.Pie(
+                    values=[stats["correct"], stats["total_key_questions"] - stats["correct"]],
+                    labels=["Correct", "Other"],
+                    hole=0.75,
+                    marker_colors=["#3b82f6", "#e2e8f0"],
+                    textinfo='none',
+                    hoverinfo='none'
+                ))
+                fig.update_layout(
+                    showlegend=False,
+                    margin=dict(t=10, b=10, l=10, r=10),
+                    height=220,
+                    annotations=[dict(text=f"<b>{stats['accuracy']}%</b><br><span style='font-size:12px;color:#94a3b8'>Accuracy</span>", x=0.5, y=0.5, font_size=32, showarrow=False)]
+                )
+                st.plotly_chart(fig, use_container_width=True)
+                
+            with st.container(border=True):
+                st.markdown("<h4 style='color:#475569;'>Questions Breakdown</h4>", unsafe_allow_html=True)
+                st.markdown(f"**{stats['total_key_questions']}** Total Questions")
+                fig_bar = go.Figure(go.Bar(
+                    x=[stats["correct"], stats["incorrect"], stats["unattempted"], stats["missing"]],
+                    y=[""],
+                    orientation='h',
+                    marker=dict(color=["#10b981", "#ef4444", "#cbd5e1", "#f59e0b"])
+                ))
+                fig_bar.update_layout(barmode='stack', showlegend=False, height=50, margin=dict(t=0, b=0, l=0, r=0), xaxis=dict(showgrid=False, showticklabels=False), yaxis=dict(showgrid=False, showticklabels=False))
+                st.plotly_chart(fig_bar, use_container_width=True)
+                st.caption("🟢 Correct &nbsp; 🔴 Incorrect &nbsp; ⚪ Unattempted &nbsp; 🟠 Missing")
+                
+        with dash_col2:
+            m1, m2, m3 = st.columns(3)
+            with m1:
+                with st.container(border=True):
+                    st.markdown("<p style='color:#10b981; font-weight:600; margin-bottom:0;'>Correct Answers {</p>", unsafe_allow_html=True)
+                    st.markdown(f"<h2 style='color:#10b981; margin-top:0;'>{stats['correct']}</h2>", unsafe_allow_html=True)
+            with m2:
+                with st.container(border=True):
+                    st.markdown("<p style='color:#ef4444; font-weight:600; margin-bottom:0;'>Incorrect Answers {</p>", unsafe_allow_html=True)
+                    st.markdown(f"<h2 style='color:#ef4444; margin-top:0;'>{stats['incorrect']}</h2>", unsafe_allow_html=True)
+            with m3:
+                with st.container(border=True):
+                    st.markdown("<p style='color:#f59e0b; font-weight:600; margin-bottom:0;'>Unattempted {</p>", unsafe_allow_html=True)
+                    st.markdown(f"<h2 style='color:#f59e0b; margin-top:0;'>{stats['unattempted']}</h2>", unsafe_allow_html=True)
+                    
+            st.markdown("<h4 style='margin-top:20px; color:#1e293b;'>Thematic Reports</h4>", unsafe_allow_html=True)
+            r1, r2 = st.columns(2)
+            with r1:
+                with st.container(border=True):
+                    st.markdown("<p style='color:#475569; font-size:0.9rem; font-weight:600; margin-bottom:0;'>Estimated Score</p>", unsafe_allow_html=True)
+                    st.markdown(f"<h2 style='color:#2563eb; margin-top:0; font-size:2.5rem;'>◯ {stats['estimated_score']}</h2>", unsafe_allow_html=True)
+                    if st.button("View details", key="vd1"): pass
+            with r2:
+                with st.container(border=True):
+                    st.markdown("<p style='color:#475569; font-size:0.9rem; font-weight:600; margin-bottom:0;'>Attempt Ratio</p>", unsafe_allow_html=True)
+                    attempt_pct = int((stats['attempted']/stats['total_key_questions'])*100) if stats['total_key_questions'] > 0 else 0
+                    st.markdown(f"<h2 style='color:#2563eb; margin-top:0; font-size:2.5rem;'>◯ {attempt_pct}%</h2>", unsafe_allow_html=True)
+                    if st.button("View details", key="vd2"): pass
+            r3, r4 = st.columns(2)
+            with r3:
+                with st.container(border=True):
+                    st.markdown("<p style='color:#475569; font-size:0.9rem; font-weight:600; margin-bottom:0;'>Match Confidence</p>", unsafe_allow_html=True)
+                    st.markdown(f"<h2 style='color:#2563eb; margin-top:0; font-size:2.5rem;'>◯ {stats.get('matched_percentage', 0)}%</h2>", unsafe_allow_html=True)
+                    if st.button("View details", key="vd3"): pass
+            with r4:
+                with st.container(border=True):
+                    st.markdown("<p style='color:#475569; font-size:0.9rem; font-weight:600; margin-bottom:0;'>Missing Questions</p>", unsafe_allow_html=True)
+                    st.markdown(f"<h2 style='color:#2563eb; margin-top:0; font-size:2.5rem;'>◯ {stats['missing']}</h2>", unsafe_allow_html=True)
+                    if st.button("View details", key="vd4"): pass
         
         # Actions
         st.subheader("Downloads")
