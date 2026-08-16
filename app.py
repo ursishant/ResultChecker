@@ -118,12 +118,12 @@ st.markdown("""
 
 # Navigation
 st.sidebar.title("ResultChecker")
-st.sidebar.caption("by Pennion.com")
+st.sidebar.markdown("by [Pennion.com](https://pennion.com/)")
 page = st.sidebar.radio("Go to", ["Home", "Answer Checker", "About"])
 
 if page == "Home":
     st.title("ResultChecker")
-    st.subheader("by Pennion.com")
+    st.markdown("##### by [Pennion.com](https://pennion.com/)")
     st.markdown("**Analyze your UGC NET response sheet against the official answer key instantly.**")
     
     st.markdown("""
@@ -340,7 +340,7 @@ elif page == "Answer Checker":
 
 elif page == "About":
     st.title("About ResultChecker")
-    st.caption("by Pennion.com")
+    st.markdown("##### by [Pennion.com](https://pennion.com/)")
     
     st.subheader("What is this?")
     st.write("A tool for instantly analyzing UGC NET response sheets against official answer keys.")
@@ -361,3 +361,7 @@ Compare with Correct Option ID
 Generate Analysis''')
 
     st.warning("**Important disclaimer**: The calculated score is an estimate and does not replace the official NTA result.")
+
+# Global Footer
+st.markdown("---")
+st.markdown("<div style='text-align: center; color: #64748b; padding-bottom: 20px;'>Built with ❤️ in India by <a href='https://pennion.com/' target='_blank' style='color: #2563eb; text-decoration: none; font-weight: 600;'>Pennion</a></div>", unsafe_allow_html=True)
