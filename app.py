@@ -1,12 +1,87 @@
 import streamlit as st
 import pandas as pd
-from course_database import CourseDatabase
 from parsers import detect_format, parse_response_sheet, parse_answer_key
 from analyzer import analyze_answers
 from exporter import generate_csv, generate_excel
-from result_status import get_status_display
 
-st.set_page_config(page_title="UGC NET Answer Checker", page_icon="🎓", layout="wide")
+st.set_page_config(page_title="ResultChecker by Pennion.com", page_icon="🎯", layout="wide")
+
+# Custom CSS for Sleek Interface
+st.markdown("""
+<style>
+    /* Main Background & Fonts */
+    .stApp {
+        background-color: #f8f9fa;
+        font-family: 'Inter', sans-serif;
+    }
+    
+    /* Hide Default Streamlit Branding */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    
+    /* Headers */
+    h1, h2, h3 {
+        color: #1f2937;
+        font-weight: 700 !important;
+    }
+    
+    /* Primary Button Styling */
+    .stButton > button {
+        background-color: #2563eb !important;
+        color: white !important;
+        border-radius: 8px !important;
+        border: none !important;
+        padding: 0.6rem 1.2rem !important;
+        font-weight: 600 !important;
+        transition: all 0.2s ease-in-out !important;
+    }
+    .stButton > button:hover {
+        background-color: #1d4ed8 !important;
+        box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2), 0 2px 4px -1px rgba(37, 99, 235, 0.1) !important;
+        transform: translateY(-1px) !important;
+    }
+    
+    /* Upload Cards Styling */
+    [data-testid="stFileUploader"] {
+        background-color: white;
+        border: 2px dashed #cbd5e1;
+        border-radius: 12px;
+        padding: 1.5rem;
+        transition: border-color 0.2s ease;
+    }
+    [data-testid="stFileUploader"]:hover {
+        border-color: #2563eb;
+    }
+    
+    /* Metric Cards */
+    [data-testid="stMetric"] {
+        background-color: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 1rem;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    }
+    [data-testid="stMetricValue"] {
+        color: #2563eb !important;
+        font-weight: 800 !important;
+    }
+    
+    /* Expander / Accordion */
+    .streamlit-expanderHeader {
+        background-color: white;
+        border-radius: 8px;
+        border: 1px solid #e5e7eb;
+        font-weight: 600;
+    }
+    
+    /* Sidebar */
+    [data-testid="stSidebar"] {
+        background-color: #ffffff;
+        border-right: 1px solid #e5e7eb;
+    }
+</style>
+""", unsafe_allow_html=True)
 
 # Initialize Database
 @st.cache_resource
@@ -16,15 +91,17 @@ def get_db():
 db = get_db()
 
 # Navigation
-st.sidebar.title("Navigation")
-page = st.sidebar.radio("Go to", ["Home", "Answer Checker", "Result Status", "About"])
+st.sidebar.title("ResultChecker")
+st.sidebar.caption("by Pennion.com")
+page = st.sidebar.radio("Go to", ["Home", "Answer Checker", "About"])
 
 if page == "Home":
-    st.title("UGC NET Answer Checker")
-    st.markdown("**Analyze your UGC NET response sheet against the official answer key and check the result status of your subject.**")
+    st.title("ResultChecker")
+    st.subheader("by Pennion.com")
+    st.markdown("**Analyze your UGC NET response sheet against the official answer key instantly.**")
     
     st.markdown("""
-    Welcome to the UGC NET Answer Checker!
+    Welcome to ResultChecker!
     
     Upload your response sheet and official answer key to get a detailed question-wise analysis, including:
     - ✅ Correct Answers
@@ -35,27 +112,17 @@ if page == "Home":
     
     Get started by navigating to the Answer Checker!
     """)
-    if st.button("Analyze My Answers", type="primary"):
-        st.switch_page("Answer Checker") # Streamlit natively doesn't have a simple page redirect for radio buttons without using multi-page framework, but we can instruct users or use query params. Wait, let's just use st.session_state to handle navigation.
+    st.info("👈 Please select **Answer Checker** from the sidebar menu to begin.")
         
     st.info("Your privacy matters. We do not permanently store your uploaded PDFs. All analysis is done temporarily in your session.")
 
 elif page == "Answer Checker":
     st.title("Answer Checker")
     
-    # 1. Select Course
-    st.subheader("1. Select Your Subject (Optional)")
-    courses = db.get_all_courses()
-    course_options = ["None"] + [f"{c['code']} - {c['name']}" for c in courses]
-    selected_course_str = st.selectbox("Search subject/course", options=course_options)
-    
     selected_course = None
-    if selected_course_str != "None":
-        code = selected_course_str.split(" - ")[0]
-        selected_course = db.get_course_by_code(code)
         
-    # 2. Upload Files
-    st.subheader("2. Upload Documents")
+    # 1. Upload Files
+    st.subheader("1. Upload Documents")
     
     col1, col2 = st.columns(2)
     with col1:
@@ -120,30 +187,12 @@ elif page == "Answer Checker":
         st.divider()
         df = st.session_state['df']
         stats = st.session_state['stats']
-        sel_course = st.session_state['selected_course']
         
         st.success(f"Successfully processed! Match Percentage: {stats.get('matched_percentage', 0)}%")
         
         if stats.get('matched_percentage', 0) < 50:
             st.warning("**Warning: The uploaded response sheet and answer key may not belong to the same examination/session. Please verify your files.**")
             
-        # Section 1: Result Status
-        st.header("Official Result Status")
-        if sel_course:
-            status_text, r_date, r_url = get_status_display(sel_course)
-            if status_text == "Result Declared":
-                st.success(f"**Result Declared**")
-                if r_url:
-                    st.markdown(f"[View Official Result]({r_url})")
-                else:
-                    st.write("Official result link not available in the current database.")
-            else:
-                st.info(f"**Result Not Declared**")
-        else:
-            st.write("No course selected. Official result status cannot be determined.")
-            
-        st.caption("Official Result Status is shown only when the corresponding course record has been marked as officially declared in the platform's verified result database.")
-        
         # Section 2: Answer Analysis
         st.header("Your Answer Analysis")
         st.caption("Important: The score shown here is calculated from the uploaded response sheet and answer key. It is not an official NTA score or result.")
@@ -163,8 +212,8 @@ elif page == "Answer Checker":
         # Actions
         st.subheader("Downloads")
         csv_data = generate_csv(df)
-        course_name = sel_course["name"] if sel_course else "Unknown Course"
-        status_text = get_status_display(sel_course)[0] if sel_course else "Unknown"
+        course_name = "Unknown Course"
+        status_text = "N/A"
         excel_data = generate_excel(df, stats, course_name, status_text)
         
         dl_col1, dl_col2 = st.columns(2)
@@ -192,44 +241,12 @@ elif page == "Answer Checker":
                 else:
                     st.info(row['Result'])
 
-elif page == "Result Status":
-    st.title("UGC NET Result Status")
-    st.write("Check the official result declaration status of UGC NET subjects.")
-    
-    courses = db.get_all_courses()
-    
-    search_query = st.text_input("Search subject/course by name or code")
-    filter_opt = st.radio("Filter", ["All", "Result Declared", "Result Not Declared"], horizontal=True)
-    
-    filtered_courses = db.search_courses(search_query)
-    
-    if filter_opt == "Result Declared":
-        filtered_courses = [c for c in filtered_courses if c.get("result_declared", False)]
-    elif filter_opt == "Result Not Declared":
-        filtered_courses = [c for c in filtered_courses if not c.get("result_declared", False)]
-        
-    st.write(f"Showing {len(filtered_courses)} course(s)")
-    
-    for c in filtered_courses:
-        with st.container(border=True):
-            st.subheader(f"{c['code']} - {c['name']}")
-            status, date, url = get_status_display(c)
-            
-            if status == "Result Declared":
-                st.success(f"**Result Declared**")
-                if date:
-                    st.write(f"Result Date: {date}")
-                if url:
-                    st.markdown(f"[View Official Result]({url})")
-            else:
-                st.info(f"**Result Not Declared**")
-                st.write("We will update this status when official information is available.")
-
 elif page == "About":
-    st.title("About UGC NET Answer Checker")
+    st.title("About ResultChecker")
+    st.caption("by Pennion.com")
     
     st.subheader("What is this?")
-    st.write("A tool for analyzing UGC NET response sheets against official answer keys.")
+    st.write("A tool for instantly analyzing UGC NET response sheets against official answer keys.")
     
     st.subheader("How does it work?")
     st.code('''Upload Response Sheet
