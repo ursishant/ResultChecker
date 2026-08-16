@@ -1,10 +1,23 @@
 import streamlit as st
 import pandas as pd
+import streamlit.components.v1 as components
 from parsers import detect_format, parse_response_sheet, parse_answer_key
 from analyzer import analyze_answers
 from exporter import generate_csv, generate_excel
 
 st.set_page_config(page_title="ResultChecker by Pennion.com", page_icon="🎯", layout="wide")
+
+# Analytics Injection (Replace with your actual tracking code)
+components.html(
+    """
+    <!-- Paste your Google Analytics or other tracking code here -->
+    <script>
+        // Analytics code goes here
+        console.log("Analytics active");
+    </script>
+    """,
+    width=0, height=0
+)
 
 # Custom CSS for Sleek Interface
 st.markdown("""
