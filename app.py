@@ -96,12 +96,6 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# Initialize Database
-@st.cache_resource
-def get_db():
-    return CourseDatabase()
-
-db = get_db()
 
 # Navigation
 st.sidebar.title("ResultChecker")
