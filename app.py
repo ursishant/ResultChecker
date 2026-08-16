@@ -151,9 +151,10 @@ if page == "Home":
     
     Get started by navigating to the Answer Checker!
     """)
-    if st.button("Go to Answer Checker", type="primary", use_container_width=True):
+    def navigate_to_checker():
         st.session_state.nav_page = "Answer Checker"
-        st.rerun()
+        
+    st.button("Go to Answer Checker", type="primary", use_container_width=True, on_click=navigate_to_checker)
         
     st.info("Your privacy matters. We do not permanently store your uploaded PDFs. All analysis is done temporarily in your session.")
 
