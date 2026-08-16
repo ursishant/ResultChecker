@@ -277,15 +277,15 @@ elif page == "Answer Checker":
             m1, m2, m3 = st.columns(3)
             with m1:
                 with st.container(border=True):
-                    st.markdown("<p style='color:#10b981; font-weight:600; margin-bottom:0;'>Correct Answers {</p>", unsafe_allow_html=True)
+                    st.markdown("<p style='color:#10b981; font-weight:600; margin-bottom:0;'>Correct Answers</p>", unsafe_allow_html=True)
                     st.markdown(f"<h2 style='color:#10b981; margin-top:0;'>{stats['correct']}</h2>", unsafe_allow_html=True)
             with m2:
                 with st.container(border=True):
-                    st.markdown("<p style='color:#ef4444; font-weight:600; margin-bottom:0;'>Incorrect Answers {</p>", unsafe_allow_html=True)
+                    st.markdown("<p style='color:#ef4444; font-weight:600; margin-bottom:0;'>Incorrect Answers</p>", unsafe_allow_html=True)
                     st.markdown(f"<h2 style='color:#ef4444; margin-top:0;'>{stats['incorrect']}</h2>", unsafe_allow_html=True)
             with m3:
                 with st.container(border=True):
-                    st.markdown("<p style='color:#f59e0b; font-weight:600; margin-bottom:0;'>Unattempted {</p>", unsafe_allow_html=True)
+                    st.markdown("<p style='color:#f59e0b; font-weight:600; margin-bottom:0;'>Unattempted</p>", unsafe_allow_html=True)
                     st.markdown(f"<h2 style='color:#f59e0b; margin-top:0;'>{stats['unattempted']}</h2>", unsafe_allow_html=True)
                     
             st.markdown("<h4 style='margin-top:20px; color:#1e293b;'>Thematic Reports</h4>", unsafe_allow_html=True)
@@ -293,21 +293,25 @@ elif page == "Answer Checker":
             with r1:
                 with st.container(border=True):
                     st.markdown("<p style='color:#475569; font-size:0.9rem; font-weight:600; margin-bottom:0;'>Estimated Score</p>", unsafe_allow_html=True)
-                    st.markdown(f"<h2 style='color:#2563eb; margin-top:0; font-size:2.5rem;'>◯ {stats['estimated_score']}</h2>", unsafe_allow_html=True)
+                    st.markdown(f"<h2 style='color:#2563eb; margin-top:0; margin-bottom:0; font-size:2.5rem;'>◯ {stats['estimated_score']}</h2>", unsafe_allow_html=True)
+                    st.markdown("<p style='color:#94a3b8; font-size:0.75rem; margin-top:0;'>*Calculated as: (Correct × 2) - (Incorrect × 0)</p>", unsafe_allow_html=True)
             with r2:
                 with st.container(border=True):
                     st.markdown("<p style='color:#475569; font-size:0.9rem; font-weight:600; margin-bottom:0;'>Attempt Ratio</p>", unsafe_allow_html=True)
                     attempt_pct = int((stats['attempted']/stats['total_key_questions'])*100) if stats['total_key_questions'] > 0 else 0
-                    st.markdown(f"<h2 style='color:#2563eb; margin-top:0; font-size:2.5rem;'>◯ {attempt_pct}%</h2>", unsafe_allow_html=True)
+                    st.markdown(f"<h2 style='color:#2563eb; margin-top:0; margin-bottom:0; font-size:2.5rem;'>◯ {attempt_pct}%</h2>", unsafe_allow_html=True)
+                    st.markdown("<p style='color:#94a3b8; font-size:0.75rem; margin-top:0;'>*Calculated as: Total Attempted / Total Questions</p>", unsafe_allow_html=True)
             r3, r4 = st.columns(2)
             with r3:
                 with st.container(border=True):
                     st.markdown("<p style='color:#475569; font-size:0.9rem; font-weight:600; margin-bottom:0;'>Match Confidence</p>", unsafe_allow_html=True)
-                    st.markdown(f"<h2 style='color:#2563eb; margin-top:0; font-size:2.5rem;'>◯ {stats.get('matched_percentage', 0)}%</h2>", unsafe_allow_html=True)
+                    st.markdown(f"<h2 style='color:#2563eb; margin-top:0; margin-bottom:0; font-size:2.5rem;'>◯ {stats.get('matched_percentage', 0)}%</h2>", unsafe_allow_html=True)
+                    st.markdown("<p style='color:#94a3b8; font-size:0.75rem; margin-top:0;'>*Percentage of your questions found in the Answer Key</p>", unsafe_allow_html=True)
             with r4:
                 with st.container(border=True):
                     st.markdown("<p style='color:#475569; font-size:0.9rem; font-weight:600; margin-bottom:0;'>Missing Questions</p>", unsafe_allow_html=True)
-                    st.markdown(f"<h2 style='color:#2563eb; margin-top:0; font-size:2.5rem;'>◯ {stats['missing']}</h2>", unsafe_allow_html=True)
+                    st.markdown(f"<h2 style='color:#2563eb; margin-top:0; margin-bottom:0; font-size:2.5rem;'>◯ {stats['missing']}</h2>", unsafe_allow_html=True)
+                    st.markdown("<p style='color:#94a3b8; font-size:0.75rem; margin-top:0;'>*Questions in Answer Key not found in your Response Sheet</p>", unsafe_allow_html=True)
         
         # Actions
         st.subheader("Downloads")
