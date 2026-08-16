@@ -112,6 +112,16 @@ st.markdown("""
         border-radius: 12px !important;
         border: none !important;
     }
+    
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+        h1 { font-size: 2rem !important; }
+        h2 { font-size: 1.5rem !important; }
+        [data-testid="stMetricValue"], h2[style*="font-size:2.5rem"] { font-size: 1.5rem !important; }
+        [data-testid="stFileUploader"] { padding: 1rem; }
+        /* Force columns to stack gracefully on smaller screens */
+        [data-testid="column"] { min-width: 100% !important; }
+    }
 </style>
 """, unsafe_allow_html=True)
 
