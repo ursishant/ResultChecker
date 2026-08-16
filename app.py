@@ -129,7 +129,10 @@ st.markdown("""
 # Navigation
 st.sidebar.title("ResultChecker")
 st.sidebar.markdown("by [Pennion.com](https://pennion.com/)")
-page = st.sidebar.radio("Go to", ["Home", "Answer Checker", "About"])
+if "nav_page" not in st.session_state:
+    st.session_state.nav_page = "Home"
+
+page = st.sidebar.radio("Go to", ["Home", "Answer Checker", "About"], key="nav_page")
 
 if page == "Home":
     st.title("ResultChecker")
@@ -148,7 +151,9 @@ if page == "Home":
     
     Get started by navigating to the Answer Checker!
     """)
-    st.info("👈 Please select **Answer Checker** from the sidebar menu to begin.")
+    if st.button("Go to Answer Checker", type="primary", use_container_width=True):
+        st.session_state.nav_page = "Answer Checker"
+        st.rerun()
         
     st.info("Your privacy matters. We do not permanently store your uploaded PDFs. All analysis is done temporarily in your session.")
 
