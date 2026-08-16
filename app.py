@@ -263,12 +263,16 @@ elif page == "Answer Checker":
             with st.container(border=True):
                 st.markdown("<h4 style='color:#475569;'>Questions Breakdown</h4>", unsafe_allow_html=True)
                 st.markdown(f"**{stats['total_key_questions']}** Total Questions")
-                fig_bar = go.Figure(go.Bar(
-                    x=[stats["correct"], stats["incorrect"], stats["unattempted"], stats["missing"]],
-                    y=[""],
-                    orientation='h',
-                    marker=dict(color=["#10b981", "#ef4444", "#cbd5e1", "#f59e0b"])
-                ))
+                fig_bar = go.Figure()
+                if stats["correct"] > 0:
+                    fig_bar.add_trace(go.Bar(x=[stats["correct"]], y=[""], name="Correct", orientation='h', marker=dict(color="#10b981")))
+                if stats["incorrect"] > 0:
+                    fig_bar.add_trace(go.Bar(x=[stats["incorrect"]], y=[""], name="Incorrect", orientation='h', marker=dict(color="#ef4444")))
+                if stats["unattempted"] > 0:
+                    fig_bar.add_trace(go.Bar(x=[stats["unattempted"]], y=[""], name="Unattempted", orientation='h', marker=dict(color="#cbd5e1")))
+                if stats["missing"] > 0:
+                    fig_bar.add_trace(go.Bar(x=[stats["missing"]], y=[""], name="Missing", orientation='h', marker=dict(color="#f59e0b")))
+                    
                 fig_bar.update_layout(barmode='stack', showlegend=False, height=50, margin=dict(t=0, b=0, l=0, r=0), xaxis=dict(showgrid=False, showticklabels=False), yaxis=dict(showgrid=False, showticklabels=False))
                 st.plotly_chart(fig_bar, use_container_width=True)
                 st.caption("🟢 Correct &nbsp; 🔴 Incorrect &nbsp; ⚪ Unattempted &nbsp; 🟠 Missing")
